@@ -5,6 +5,7 @@ namespace App\Entity;
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\TrainingMediaRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Ignore;
 
 #[ORM\Entity(repositoryClass: TrainingMediaRepository::class)]
 #[ApiResource]
@@ -28,6 +29,7 @@ class Media
     private ?\DateTimeImmutable $updatedAt = null;
 
     #[ORM\ManyToOne(inversedBy: 'trainingMedia')]
+    #[Ignore]
     private ?MediaType $mediaType = null;
 
     public function getId(): ?int

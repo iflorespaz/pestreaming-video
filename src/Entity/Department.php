@@ -7,6 +7,7 @@ use App\Repository\DepartmentRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Ignore;
 
 #[ORM\Entity(repositoryClass: DepartmentRepository::class)]
 #[ApiResource]
@@ -24,6 +25,7 @@ class Department
     private ?bool $status = null;
 
     #[ORM\ManyToMany(targetEntity: Category::class, inversedBy: 'departments')]
+    #[Ignore]
     private Collection $category;
 
     public function __construct()
