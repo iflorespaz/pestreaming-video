@@ -1,0 +1,17 @@
+api_platform:
+  title: 'Pest-Streaming API '
+  description: 'A set of apis to build tempest apps'
+  version: '1.0.0'
+  mapping:
+    paths: ['%kernel.project_dir%/src/Entity/']
+  swagger:
+    versions: [3]
+    api_keys:
+      JWT:
+        name: Authorization
+        type: header
+  formats:
+    json: ['application/json']
+    jsonld: ['application/ld+json']
+    html: ['text/html']
+    multipart: ['multipart/form-data']
