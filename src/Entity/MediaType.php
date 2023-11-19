@@ -23,7 +23,7 @@ class MediaType
     #[ORM\Column]
     private ?bool $status = null;
 
-    #[ORM\OneToMany(mappedBy: 'mediaType', targetEntity: TrainingMedia::class)]
+    #[ORM\OneToMany(mappedBy: 'mediaType', targetEntity: Media::class)]
     private Collection $trainingMedia;
 
     public function __construct()
@@ -61,14 +61,14 @@ class MediaType
     }
 
     /**
-     * @return Collection<int, TrainingMedia>
+     * @return Collection<int, Media>
      */
-    public function getTrainingMedia(): Collection
+    public function getMedia(): Collection
     {
         return $this->trainingMedia;
     }
 
-    public function addTrainingMedium(TrainingMedia $trainingMedium): static
+    public function addMedium(Media $trainingMedium): static
     {
         if (!$this->trainingMedia->contains($trainingMedium)) {
             $this->trainingMedia->add($trainingMedium);
@@ -78,7 +78,7 @@ class MediaType
         return $this;
     }
 
-    public function removeTrainingMedium(TrainingMedia $trainingMedium): static
+    public function removeMedium(Media $trainingMedium): static
     {
         if ($this->trainingMedia->removeElement($trainingMedium)) {
             // set the owning side to null (unless already changed)

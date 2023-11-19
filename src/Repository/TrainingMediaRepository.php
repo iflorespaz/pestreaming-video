@@ -2,27 +2,27 @@
 
 namespace App\Repository;
 
-use App\Entity\TrainingMedia;
+use App\Entity\Media;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<TrainingMedia>
+ * @extends ServiceEntityRepository<Media>
  *
- * @method TrainingMedia|null find($id, $lockMode = null, $lockVersion = null)
- * @method TrainingMedia|null findOneBy(array $criteria, array $orderBy = null)
- * @method TrainingMedia[]    findAll()
- * @method TrainingMedia[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Media|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Media|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Media[]    findAll()
+ * @method Media[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class TrainingMediaRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, TrainingMedia::class);
+        parent::__construct($registry, Media::class);
     }
 
 //    /**
-//     * @return TrainingMedia[] Returns an array of TrainingMedia objects
+//     * @return Media[] Returns an array of Media objects
 //     */
 //    public function findByExampleField($value): array
 //    {
@@ -36,7 +36,7 @@ class TrainingMediaRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?TrainingMedia
+//    public function findOneBySomeField($value): ?Media
 //    {
 //        return $this->createQueryBuilder('t')
 //            ->andWhere('t.exampleField = :val')
