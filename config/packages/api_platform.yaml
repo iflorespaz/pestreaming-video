@@ -1,6 +1,6 @@
 api_platform:
   title: 'Pest-Streaming API '
-  description: 'A set of apis to build tempest apps'
+  description: 'A set of apis to build DELUXUS apps'
   version: '1.0.0'
   mapping:
     paths: ['%kernel.project_dir%/src/Entity/']
