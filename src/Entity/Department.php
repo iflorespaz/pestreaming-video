@@ -14,26 +14,6 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Ignore;
 
 #[ORM\Entity(repositoryClass: DepartmentRepository::class)]
-#[Post(
-    uriTemplate: '/departments/GetAllDepartmentsByDepartmentId',
-    status: 200,
-    openapiContext: [
-        'summary' => 'Retrieves all departments by tempest department ID',
-        'description' => 'Find all departments by tempest department ID',
-        'responses' => [
-            '200' => [
-                'description' => 'GetAllDepartmentsByDepartmentId resources'
-            ]
-        ],
-    ],
-    normalizationContext: [
-        'skip_null_values' => false
-    ],
-    input: InputDepartmentIdDto::class,
-    output: OutputArrayOnlyDto::class,
-    read: false,
-    processor: GetAllDepartmentsByDepartmentIdStateProcessor::class
-)]
 #[ApiResource]
 class Department
 {

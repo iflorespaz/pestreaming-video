@@ -3,13 +3,61 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Post;
+use App\Dto\Input\InputAddDepartmentToCategoryDto;
+use App\Dto\Input\InputDepartmentCodeDto;
+use App\Dto\Input\InputDepartmentIdDto;
+use App\Dto\Output\OutputArrayOnlyDto;
 use App\Repository\CategoryRepository;
+use App\State\AddDepartmentToCategoryStateProcessor;
+use App\State\GetAllCategoriesByDepartmentCodeStateProcessor;
+use App\State\GetAllDepartmentsByDepartmentIdStateProcessor;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Ignore;
 
 #[ORM\Entity(repositoryClass: CategoryRepository::class)]
+#[Post(
+    uriTemplate: '/categories/GetAllCategoriesByDepartmentCode',
+    status: 200,
+    openapiContext: [
+        'summary' => 'Retrieves all categories by tempest department code',
+        'description' => 'Find all categories by tempest department code',
+        'responses' => [
+            '200' => [
+                'description' => 'GetAllCategoriesByDepartmentCodeStateProcessor resources'
+            ]
+        ],
+    ],
+    normalizationContext: [
+        'skip_null_values' => false
+    ],
+    input: InputDepartmentCodeDto::class,
+    output: OutputArrayOnlyDto::class,
+    read: false,
+    processor: GetAllCategoriesByDepartmentCodeStateProcessor::class
+)]
+#[Post(
+    uriTemplate: '/categories/AddDepartmentToCategory',
+    status: 200,
+    openapiContext: [
+        'summary' => 'Add a department to a specific category',
+        'description' => 'Add a department to a specific category',
+        'responses' => [
+            '200' => [
+                'description' => 'AddDepartmentToCategoryStateProcessor resources'
+            ]
+        ],
+    ],
+    normalizationContext: [
+        'skip_null_values' => false
+    ],
+    input: InputAddDepartmentToCategoryDto::class,
+    output: OutputArrayOnlyDto::class,
+    read: false,
+    processor: AddDepartmentToCategoryStateProcessor::class
+)]
 #[ApiResource]
 class Category
 {
