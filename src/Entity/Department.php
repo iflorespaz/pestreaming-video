@@ -3,13 +3,34 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Post;
+use App\Dto\Input\InputDepartmentIdDto;
+use App\Dto\Output\OutputArrayOnlyDto;
 use App\Repository\DepartmentRepository;
+use App\State\GetAllDepartmentsByDepartmentIdStateProcessor;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Ignore;
 
 #[ORM\Entity(repositoryClass: DepartmentRepository::class)]
+#[Post(
+    uriTemplate: '/departments/GetAllDepartmentsByDepartmentId',
+    status: 200,
+    openapiContext: [
+        'summary' => 'Retrieves all departments by department ID',
+        'description' => 'Find all departments by department ID',
+        'responses' => [
+            '200' => [
+                'description' => 'GetAllDepartmentsByDepartmentId resources'
+            ]
+        ],
+    ],
+    input: InputDepartmentIdDto::class,
+    output: OutputArrayOnlyDto::class,
+    read: false,
+    processor: GetAllDepartmentsByDepartmentIdStateProcessor::class
+)]
 #[ApiResource]
 class Department
 {
@@ -32,10 +53,22 @@ class Department
     #[Ignore]
     private Collection $users;
 
+    #[ORM\Column]
+    private ?int $code = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $cover = null;
+
+    #[ORM\Column]
+    private ?\DateTimeImmutable $createdAt = null;
+
+    #[ORM\Column]
+    private ?\DateTimeImmutable $updatedAt = null;
+
     public function __construct()
     {
         $this->category = new ArrayCollection();
-        $this->users = new ArrayCollection();
+        $this->users    = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -114,6 +147,54 @@ class Department
         if ($this->users->removeElement($user)) {
             $user->removeDepartment($this);
         }
+
+        return $this;
+    }
+
+    public function getCode(): ?int
+    {
+        return $this->code;
+    }
+
+    public function setCode(int $code): static
+    {
+        $this->code = $code;
+
+        return $this;
+    }
+
+    public function getCover(): ?string
+    {
+        return $this->cover;
+    }
+
+    public function setCover(?string $cover): static
+    {
+        $this->cover = $cover;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(\DateTimeImmutable $updatedAt): static
+    {
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }
