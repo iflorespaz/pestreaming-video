@@ -4,10 +4,14 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Post;
+use App\Dto\Input\InputAddCategoryToMediaRelMediaTypeDto;
+use App\Dto\Input\InputAddDepartmentToCategoryDto;
 use App\Dto\Input\InputCategoryIdDto;
 use App\Dto\Input\InputDepartmentCodeDto;
 use App\Dto\Output\OutputArrayOnlyDto;
 use App\Repository\MediaRepository;
+use App\State\AddCategoryToMediaRelMediaTypeStateProcessor;
+use App\State\AddDepartmentToCategoryStateProcessor;
 use App\State\GetAllCategoriesByDepartmentCodeStateProcessor;
 use App\State\GetAllMediaByCategoryIdStateProcessor;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -36,6 +40,26 @@ use Symfony\Component\Serializer\Annotation\Ignore;
     read: false,
     processor: GetAllMediaByCategoryIdStateProcessor::class
 )]
+#[Post(
+    uriTemplate: '/media/AddCategoryToMediaRelMediaType',
+    status: 200,
+    openapiContext: [
+        'summary' => 'Add a category to a specific media resource, and set media type ID to media resources',
+        'description' => 'Add a category to a specific media resource, and set media type ID to media resource',
+        'responses' => [
+            '200' => [
+                'description' => 'AddCategoryToMediaRelMediaTypeStateProcessor resources'
+            ]
+        ],
+    ],
+    normalizationContext: [
+        'skip_null_values' => false
+    ],
+    input: InputAddCategoryToMediaRelMediaTypeDto::class,
+    output: OutputArrayOnlyDto::class,
+    read: false,
+    processor: AddCategoryToMediaRelMediaTypeStateProcessor::class
+)]
 #[ApiResource]
 class Media
 {
@@ -56,12 +80,16 @@ class Media
     #[ORM\Column]
     private ?\DateTimeImmutable $updatedAt = null;
 
-    #[ORM\ManyToOne(inversedBy: 'trainingMedia')]
+    #[ORM\ManyToOne(inversedBy: 'media')]
     #[Ignore]
     private ?MediaType $mediaType = null;
 
     #[ORM\ManyToMany(targetEntity: Category::class, inversedBy: 'media')]
+    #[Ignore]
     private Collection $category;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $url = null;
 
     public function __construct()
     {
@@ -153,6 +181,18 @@ class Media
     public function removeCategory(Category $category): static
     {
         $this->category->removeElement($category);
+
+        return $this;
+    }
+
+    public function getUrl(): ?string
+    {
+        return $this->url;
+    }
+
+    public function setUrl(?string $url): static
+    {
+        $this->url = $url;
 
         return $this;
     }

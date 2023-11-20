@@ -26,11 +26,11 @@ class MediaType
 
     #[ORM\OneToMany(mappedBy: 'mediaType', targetEntity: Media::class)]
     #[Ignore]
-    private Collection $trainingMedia;
+    private Collection $media;
 
     public function __construct()
     {
-        $this->trainingMedia = new ArrayCollection();
+        $this->media = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -67,25 +67,25 @@ class MediaType
      */
     public function getMedia(): Collection
     {
-        return $this->trainingMedia;
+        return $this->media;
     }
 
-    public function addMedium(Media $trainingMedium): static
+    public function addMedium(Media $media): static
     {
-        if (!$this->trainingMedia->contains($trainingMedium)) {
-            $this->trainingMedia->add($trainingMedium);
-            $trainingMedium->setMediaType($this);
+        if (!$this->media->contains($media)) {
+            $this->media->add($media);
+            $media->setMediaType($this);
         }
 
         return $this;
     }
 
-    public function removeMedium(Media $trainingMedium): static
+    public function removeMedium(Media $media): static
     {
-        if ($this->trainingMedia->removeElement($trainingMedium)) {
+        if ($this->media->removeElement($media)) {
             // set the owning side to null (unless already changed)
-            if ($trainingMedium->getMediaType() === $this) {
-                $trainingMedium->setMediaType(null);
+            if ($media->getMediaType() === $this) {
+                $media->setMediaType(null);
             }
         }
 
