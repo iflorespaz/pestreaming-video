@@ -26,6 +26,9 @@ use Symfony\Component\Serializer\Annotation\Ignore;
             ]
         ],
     ],
+    normalizationContext: [
+        'skip_null_values' => false
+    ],
     input: InputDepartmentIdDto::class,
     output: OutputArrayOnlyDto::class,
     read: false,
