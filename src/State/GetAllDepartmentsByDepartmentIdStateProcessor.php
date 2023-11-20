@@ -19,7 +19,7 @@ class GetAllDepartmentsByDepartmentIdStateProcessor implements ProcessorInterfac
         // Handle the state
         $item = new OutputArrayOnlyDto();
         $item->items = $this->departmentRepository->findBy(array(
-            'id' => $data->departmentId
+            'code' => $data->departmentId
         ));
         return $item;
     }

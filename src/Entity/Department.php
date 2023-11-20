@@ -18,8 +18,8 @@ use Symfony\Component\Serializer\Annotation\Ignore;
     uriTemplate: '/departments/GetAllDepartmentsByDepartmentId',
     status: 200,
     openapiContext: [
-        'summary' => 'Retrieves all departments by department ID',
-        'description' => 'Find all departments by department ID',
+        'summary' => 'Retrieves all departments by tempest department ID',
+        'description' => 'Find all departments by tempest department ID',
         'responses' => [
             '200' => [
                 'description' => 'GetAllDepartmentsByDepartmentId resources'
