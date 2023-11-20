@@ -79,9 +79,13 @@ class Category
     #[Ignore]
     private Collection $departments;
 
+    #[ORM\ManyToMany(targetEntity: Media::class, mappedBy: 'category')]
+    private Collection $media;
+
     public function __construct()
     {
         $this->departments = new ArrayCollection();
+        $this->media = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -147,6 +151,33 @@ class Category
     {
         if ($this->departments->removeElement($department)) {
             $department->removeCategory($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Media>
+     */
+    public function getMedia(): Collection
+    {
+        return $this->media;
+    }
+
+    public function addMedium(Media $medium): static
+    {
+        if (!$this->media->contains($medium)) {
+            $this->media->add($medium);
+            $medium->addCategory($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMedium(Media $medium): static
+    {
+        if ($this->media->removeElement($medium)) {
+            $medium->removeCategory($this);
         }
 
         return $this;

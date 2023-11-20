@@ -3,11 +3,39 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
-use App\Repository\TrainingMediaRepository;
+use ApiPlatform\Metadata\Post;
+use App\Dto\Input\InputCategoryIdDto;
+use App\Dto\Input\InputDepartmentCodeDto;
+use App\Dto\Output\OutputArrayOnlyDto;
+use App\Repository\MediaRepository;
+use App\State\GetAllCategoriesByDepartmentCodeStateProcessor;
+use App\State\GetAllMediaByCategoryIdStateProcessor;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Ignore;
 
-#[ORM\Entity(repositoryClass: TrainingMediaRepository::class)]
+#[ORM\Entity(repositoryClass: MediaRepository::class)]
+#[Post(
+    uriTemplate: '/media/GetAllMediaByCategoryId',
+    status: 200,
+    openapiContext: [
+        'summary' => 'Retrieves all media resources by category ID',
+        'description' => 'Find all media resources by category ID',
+        'responses' => [
+            '200' => [
+                'description' => 'GetAllMediaByCategoryIdStateProcessor resources'
+            ]
+        ],
+    ],
+    normalizationContext: [
+        'skip_null_values' => false
+    ],
+    input: InputCategoryIdDto::class,
+    output: OutputArrayOnlyDto::class,
+    read: false,
+    processor: GetAllMediaByCategoryIdStateProcessor::class
+)]
 #[ApiResource]
 class Media
 {
@@ -31,6 +59,14 @@ class Media
     #[ORM\ManyToOne(inversedBy: 'trainingMedia')]
     #[Ignore]
     private ?MediaType $mediaType = null;
+
+    #[ORM\ManyToMany(targetEntity: Category::class, inversedBy: 'media')]
+    private Collection $category;
+
+    public function __construct()
+    {
+        $this->category = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -93,6 +129,30 @@ class Media
     public function setMediaType(?MediaType $mediaType): static
     {
         $this->mediaType = $mediaType;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Category>
+     */
+    public function getCategory(): Collection
+    {
+        return $this->category;
+    }
+
+    public function addCategory(Category $category): static
+    {
+        if (!$this->category->contains($category)) {
+            $this->category->add($category);
+        }
+
+        return $this;
+    }
+
+    public function removeCategory(Category $category): static
+    {
+        $this->category->removeElement($category);
 
         return $this;
     }
