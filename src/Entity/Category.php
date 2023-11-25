@@ -6,12 +6,10 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Post;
 use App\Dto\Input\InputAddDepartmentToCategoryDto;
 use App\Dto\Input\InputDepartmentCodeDto;
-use App\Dto\Input\InputDepartmentIdDto;
 use App\Dto\Output\OutputArrayOnlyDto;
 use App\Repository\CategoryRepository;
 use App\State\AddDepartmentToCategoryStateProcessor;
 use App\State\GetAllCategoriesByDepartmentCodeStateProcessor;
-use App\State\GetAllDepartmentsByDepartmentIdStateProcessor;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -70,9 +68,6 @@ class Category
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $cover = null;
-
     #[ORM\Column]
     private ?bool $status = null;
 
@@ -85,6 +80,9 @@ class Category
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $cover = null;
 
     public function __construct()
     {
@@ -105,18 +103,6 @@ class Category
     public function setName(string $name): static
     {
         $this->name = $name;
-
-        return $this;
-    }
-
-    public function getCover(): ?string
-    {
-        return $this->cover;
-    }
-
-    public function setCover(string $cover): static
-    {
-        $this->cover = $cover;
 
         return $this;
     }
@@ -195,6 +181,18 @@ class Category
     public function setDescription(?string $description): static
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    public function getCover(): ?string
+    {
+        return $this->cover;
+    }
+
+    public function setCover(?string $cover): static
+    {
+        $this->cover = $cover;
 
         return $this;
     }

@@ -95,6 +95,9 @@ class Media
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $cover = null;
+
     public function __construct()
     {
         $this->category = new ArrayCollection();
@@ -209,6 +212,18 @@ class Media
     public function setDescription(?string $description): static
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    public function getCover(): ?string
+    {
+        return $this->cover;
+    }
+
+    public function setCover(?string $cover): static
+    {
+        $this->cover = $cover;
 
         return $this;
     }
