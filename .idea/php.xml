@@ -223,6 +223,15 @@
       <path value="$PROJECT_DIR$/../bulwarkapi/vendor/doctrine/doctrine-migrations-bundle" />
       <path value="$PROJECT_DIR$/../bulwarkapi/vendor/doctrine/instantiator" />
       <path value="$PROJECT_DIR$/../bulwarkapi/vendor/doctrine/migrations" />
+      <path value="$PROJECT_DIR$/vendor/psr/http-client" />
+      <path value="$PROJECT_DIR$/vendor/psr/http-message" />
+      <path value="$PROJECT_DIR$/vendor/psr/http-factory" />
+      <path value="$PROJECT_DIR$/vendor/nyholm/psr7" />
+      <path value="$PROJECT_DIR$/vendor/toshy/bunnynet-php" />
+      <path value="$PROJECT_DIR$/vendor/vich/uploader-bundle" />
+      <path value="$PROJECT_DIR$/vendor/jms/metadata" />
+      <path value="$PROJECT_DIR$/vendor/symfony/mime" />
+      <path value="$PROJECT_DIR$/vendor/symfony/polyfill-intl-idn" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.1" />

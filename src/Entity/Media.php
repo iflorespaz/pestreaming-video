@@ -2,23 +2,28 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use App\Dto\Input\InputAddCategoryToMediaRelMediaTypeDto;
-use App\Dto\Input\InputAddDepartmentToCategoryDto;
 use App\Dto\Input\InputCategoryIdDto;
-use App\Dto\Input\InputDepartmentCodeDto;
 use App\Dto\Output\OutputArrayOnlyDto;
 use App\Repository\MediaRepository;
 use App\State\AddCategoryToMediaRelMediaTypeStateProcessor;
-use App\State\AddDepartmentToCategoryStateProcessor;
-use App\State\GetAllCategoriesByDepartmentCodeStateProcessor;
 use App\State\GetAllMediaByCategoryIdStateProcessor;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Ignore;
+use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use ApiPlatform\OpenApi\Model;
+use App\Controller\CreateMediaObjectActionController;
 
 #[ORM\Entity(repositoryClass: MediaRepository::class)]
 #[Post(
@@ -61,18 +66,68 @@ use Symfony\Component\Serializer\Annotation\Ignore;
     read: false,
     processor: AddCategoryToMediaRelMediaTypeStateProcessor::class
 )]
-#[ApiResource]
+#[Vich\Uploadable]
+#[ApiResource(
+    types: ['https://schema.org/Media'],
+    operations: [
+        new Get(),
+        new GetCollection(),
+        new Post(
+            controller: CreateMediaObjectActionController::class,
+            openapi: new Model\Operation(
+                responses: [
+                ], requestBody: new Model\RequestBody(
+                    content: new \ArrayObject([
+                        'multipart/form-data' => [
+                            'schema' => [
+                                'type' => 'object',
+                                'properties' => [
+                                    'name' => [
+                                        'type' => 'string',
+                                    ],
+                                    'description' => [
+                                        'type' => 'string',
+                                    ],
+                                    'url' => [
+                                        'type' => 'string',
+                                    ],
+                                    'status' => [
+                                        'type' => 'boolean',
+                                    ],
+                                    'fileCover' => [
+                                        'type' => 'string',
+                                        'format' => 'binary'
+                                    ],
+                                    'file' => [
+                                        'type' => 'string',
+                                        'format' => 'binary'
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ])
+            )
+            ),
+            validationContext: ['groups' => ['Default', 'media:create']],
+            deserialize: false
+        )
+    ],
+    normalizationContext: ['groups' => ['media:read'], 'skip_null_values' => false]
+)]
 class Media
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['media:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['media:read'])]
     private ?string $name = null;
 
     #[ORM\Column]
+    #[Groups(['media:read'])]
     private ?bool $status = null;
 
     #[ORM\Column]
@@ -83,20 +138,31 @@ class Media
 
     #[ORM\ManyToOne(inversedBy: 'media')]
     #[Ignore]
+    #[Groups(['media:read'])]
     private ?MediaType $mediaType = null;
 
     #[ORM\ManyToMany(targetEntity: Category::class, inversedBy: 'media')]
     #[Ignore]
+    #[Groups(['media:read'])]
     private Collection $category;
 
+    #[ApiProperty(types: ['https://schema.org/url'])]
+    #[Groups(['media:read'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $url = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['media:read'])]
     private ?string $description = null;
 
+
+    #[Vich\UploadableField(mapping: "media_image", fileNameProperty: "filePath")]
+    #[Assert\NotNull(groups: ['media:create'])]
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $cover = null;
+    public ?string $cover = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $filePath = null;
 
     public function __construct()
     {
@@ -224,6 +290,18 @@ class Media
     public function setCover(?string $cover): static
     {
         $this->cover = $cover;
+
+        return $this;
+    }
+
+    public function getFilePath(): ?string
+    {
+        return $this->filePath;
+    }
+
+    public function setFilePath(?string $filePath): static
+    {
+        $this->filePath = $filePath;
 
         return $this;
     }
