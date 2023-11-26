@@ -164,9 +164,19 @@ class Media
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $filePath = null;
 
+    #[ORM\Column]
+    private ?int $sort = null;
+
+    #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'media')]
+    private ?self $prerequisite = null;
+
+    #[ORM\OneToMany(mappedBy: 'prerequisite', targetEntity: self::class)]
+    private Collection $media;
+
     public function __construct()
     {
         $this->category = new ArrayCollection();
+        $this->media = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -302,6 +312,60 @@ class Media
     public function setFilePath(?string $filePath): static
     {
         $this->filePath = $filePath;
+
+        return $this;
+    }
+
+    public function getSort(): ?int
+    {
+        return $this->sort;
+    }
+
+    public function setSort(int $sort): static
+    {
+        $this->sort = $sort;
+
+        return $this;
+    }
+
+    public function getPrerequisite(): ?self
+    {
+        return $this->prerequisite;
+    }
+
+    public function setPrerequisite(?self $prerequisite): static
+    {
+        $this->prerequisite = $prerequisite;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, self>
+     */
+    public function getMedia(): Collection
+    {
+        return $this->media;
+    }
+
+    public function addMedium(self $medium): static
+    {
+        if (!$this->media->contains($medium)) {
+            $this->media->add($medium);
+            $medium->setPrerequisite($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMedium(self $medium): static
+    {
+        if ($this->media->removeElement($medium)) {
+            // set the owning side to null (unless already changed)
+            if ($medium->getPrerequisite() === $this) {
+                $medium->setPrerequisite(null);
+            }
+        }
 
         return $this;
     }
