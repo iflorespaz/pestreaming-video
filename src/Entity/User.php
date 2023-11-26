@@ -36,9 +36,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Ignore]
     private Collection $department;
 
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Tabs::class)]
+    private Collection $tabs;
+
     public function __construct()
     {
         $this->department = new ArrayCollection();
+        $this->tabs = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -131,6 +135,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeDepartment(Department $department): static
     {
         $this->department->removeElement($department);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Tabs>
+     */
+    public function getTabs(): Collection
+    {
+        return $this->tabs;
+    }
+
+    public function addTab(Tabs $tab): static
+    {
+        if (!$this->tabs->contains($tab)) {
+            $this->tabs->add($tab);
+            $tab->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTab(Tabs $tab): static
+    {
+        if ($this->tabs->removeElement($tab)) {
+            // set the owning side to null (unless already changed)
+            if ($tab->getUser() === $this) {
+                $tab->setUser(null);
+            }
+        }
 
         return $this;
     }
